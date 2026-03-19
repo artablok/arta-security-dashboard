@@ -38,6 +38,21 @@
     .warning {
       color:#ff4d4d;
     }
+
+    .risk-high {
+      color:#ff4d4d;
+      font-weight:bold;
+    }
+
+    .risk-medium {
+      color:#ffaa00;
+      font-weight:bold;
+    }
+
+    .risk-low {
+      color:#00ff99;
+      font-weight:bold;
+    }
   </style>
 </head>
 
@@ -69,13 +84,28 @@ fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/
 
   data.forEach(network => {
     network.scam_tokens.forEach(t => {
+
+      let risk = "LOW";
+      let riskClass = "risk-low";
+
+      if (t.type === "Dust Attack") {
+        risk = "HIGH";
+        riskClass = "risk-high";
+      }
+
+      if (t.type === "Impersonation") {
+        risk = "HIGH";
+        riskClass = "risk-high";
+      }
+
       html += `
         <div class="card">
           <b>${t.name}</b> (${t.symbol})<br>
           Type: ${t.type}<br>
           Address: ${t.address}<br>
           Network: ${network.network}<br>
-          Status: ⚠️ ${t.status}
+          Status: ⚠️ ${t.status}<br>
+          Risk Level: <span class="${riskClass}">${risk}</span>
         </div>
       `;
     });
