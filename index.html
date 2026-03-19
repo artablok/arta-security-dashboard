@@ -57,9 +57,14 @@
     input {
       padding:10px;
       width:300px;
-      margin-bottom:20px;
+      margin-bottom:10px;
       border-radius:5px;
       border:none;
+    }
+
+    #stats {
+      margin-bottom:20px;
+      font-weight:bold;
     }
   </style>
 </head>
@@ -77,6 +82,8 @@
 
 <input id="search" placeholder="Search token...">
 
+<p id="stats"></p>
+
 <div id="data">Loading...</div>
 
 <h2>📊 System Status</h2>
@@ -93,8 +100,13 @@ function render() {
   let html = "";
   let searchValue = document.getElementById("search").value.toLowerCase();
 
+  let total = 0;
+  let highRisk = 0;
+
   allData.forEach(network => {
     network.scam_tokens.forEach(t => {
+
+      total++;
 
       if (
         !t.name.toLowerCase().includes(searchValue) &&
@@ -107,11 +119,13 @@ function render() {
       if (t.type === "Dust Attack") {
         risk = "HIGH";
         riskClass = "risk-high";
+        highRisk++;
       }
 
       if (t.type === "Impersonation") {
         risk = "HIGH";
         riskClass = "risk-high";
+        highRisk++;
       }
 
       html += `
@@ -128,6 +142,10 @@ function render() {
   });
 
   document.getElementById("data").innerHTML = html;
+
+  document.getElementById("stats").innerHTML = `
+    Total threats: ${total} | High risk: ${highRisk}
+  `;
 }
 
 fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
