@@ -31,16 +31,35 @@
       border:1px solid #222;
     }
 
-    .badge {
-      color:#ff4d4d;
-      font-weight:bold;
-    }
-
     .status {
       color:#00ff99;
     }
+
+    .warning {
+      color:#ff4d4d;
+    }
   </style>
 </head>
+
+<body>
+
+<div class="header">
+  <h1>🛡️ Arta Blockchain Security</h1>
+  <p>Real-time scam token intelligence</p>
+</div>
+
+<div class="container">
+
+<h2>🚨 Live Scam Tokens</h2>
+<div id="data">Loading...</div>
+
+<h2>📊 System Status</h2>
+<p class="status">🟢 Monitoring Active</p>
+<p class="status">🟢 Database Online</p>
+<p class="warning">⚠️ Threats Detected</p>
+
+</div>
+
 <script>
 fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
 .then(res => res.json())
@@ -68,25 +87,6 @@ fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/
   document.getElementById("data").innerHTML = "Error loading data";
 });
 </script>
-<body>
-
-<div class="header">
-  <h1>🛡️ Arta Blockchain Security</h1>
-  <p>Real-time scam token intelligence</p>
-</div>
-
-<div class="container">
-
-<h2>🚨 Live Scam Tokens</h2>
-<div id="data">Loading...</div>
-
-<h2>📊 System Status</h2>
-<p class="status">🟢 Monitoring Active</p>
-<p class="status">🟢 Database Online</p>
-<p class="badge">⚠️ Threats Detected</p>
-
-</div>
-
 
 </body>
 </html>
