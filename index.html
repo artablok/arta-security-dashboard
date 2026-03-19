@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Arta Security Dashboard</title>
+  <meta charset="UTF-8">
+</head>
+
+<body style="background:#0b0f19;color:white;font-family:sans-serif">
+
+<h1>🛡️ Arta Blockchain Security</h1>
+<p>Real-time scam token detection</p>
+
+<h2>🚨 Live Scam Tokens</h2>
+<div id="data">Loading...</div>
+
+<script>
+fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
+.then(res => res.json())
+.then(data => {
+  let html = "";
+  data.forEach(t => {
+    html += `
+      <div style="margin:10px;padding:10px;border:1px solid #333">
+        <b>${t.name}</b> (${t.symbol})<br>
+        Type: ${t.type}<br>
+        Network: Solana
+      </div>
+    `;
+  });
+  document.getElementById("data").innerHTML = html;
+})
+.catch(() => {
+  document.getElementById("data").innerHTML = "Error loading data";
+});
+</script>
+
+</body>
+</html>
