@@ -41,7 +41,33 @@
     }
   </style>
 </head>
+<script>
+fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
+.then(res => res.json())
+.then(data => {
 
+  let html = "";
+
+  data.forEach(network => {
+    network.scam_tokens.forEach(t => {
+      html += `
+        <div class="card">
+          <b>${t.name}</b> (${t.symbol})<br>
+          Type: ${t.type}<br>
+          Address: ${t.address}<br>
+          Network: ${network.network}<br>
+          Status: ⚠️ ${t.status}
+        </div>
+      `;
+    });
+  });
+
+  document.getElementById("data").innerHTML = html;
+})
+.catch(() => {
+  document.getElementById("data").innerHTML = "Error loading data";
+});
+</script>
 <body>
 
 <div class="header">
@@ -61,27 +87,6 @@
 
 </div>
 
-<script>
-fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
-.then(res => res.json())
-.then(data => {
-  let html = "";
-  data.forEach(t => {
-    html += `
-      <div class="card">
-        <b>${t.name}</b> (${t.symbol})<br>
-        Type: ${t.type}<br>
-        Network: Solana<br>
-        Status: ⚠️ Active Threat
-      </div>
-    `;
-  });
-  document.getElementById("data").innerHTML = html;
-})
-.catch(() => {
-  document.getElementById("data").innerHTML = "Error loading data";
-});
-</script>
 
 </body>
 </html>
