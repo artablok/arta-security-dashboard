@@ -53,6 +53,14 @@
       color:#00ff99;
       font-weight:bold;
     }
+
+    input {
+      padding:10px;
+      width:300px;
+      margin-bottom:20px;
+      border-radius:5px;
+      border:none;
+    }
   </style>
 </head>
 
@@ -66,6 +74,9 @@
 <div class="container">
 
 <h2>🚨 Live Scam Tokens</h2>
+
+<input id="search" placeholder="Search token...">
+
 <div id="data">Loading...</div>
 
 <h2>📊 System Status</h2>
@@ -76,14 +87,19 @@
 </div>
 
 <script>
-fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
-.then(res => res.json())
-.then(data => {
+let allData = [];
 
+function render() {
   let html = "";
+  let searchValue = document.getElementById("search").value.toLowerCase();
 
-  data.forEach(network => {
+  allData.forEach(network => {
     network.scam_tokens.forEach(t => {
+
+      if (
+        !t.name.toLowerCase().includes(searchValue) &&
+        !t.symbol.toLowerCase().includes(searchValue)
+      ) return;
 
       let risk = "LOW";
       let riskClass = "risk-low";
@@ -112,10 +128,16 @@ fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/
   });
 
   document.getElementById("data").innerHTML = html;
-})
-.catch(() => {
-  document.getElementById("data").innerHTML = "Error loading data";
+}
+
+fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
+.then(res => res.json())
+.then(data => {
+  allData = data;
+  render();
 });
+
+document.getElementById("search").addEventListener("input", render);
 </script>
 
 </body>
