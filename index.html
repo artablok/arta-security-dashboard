@@ -3,15 +3,63 @@
 <head>
   <title>Arta Security Dashboard</title>
   <meta charset="UTF-8">
+
+  <style>
+    body {
+      background:#0b0f19;
+      color:white;
+      font-family:Arial;
+      margin:0;
+      padding:0;
+    }
+
+    .header {
+      padding:20px;
+      background:#111827;
+      border-bottom:1px solid #222;
+    }
+
+    .container {
+      padding:20px;
+    }
+
+    .card {
+      background:#111827;
+      padding:15px;
+      margin-bottom:10px;
+      border-radius:10px;
+      border:1px solid #222;
+    }
+
+    .badge {
+      color:#ff4d4d;
+      font-weight:bold;
+    }
+
+    .status {
+      color:#00ff99;
+    }
+  </style>
 </head>
 
-<body style="background:#0b0f19;color:white;font-family:sans-serif">
+<body>
 
-<h1>🛡️ Arta Blockchain Security</h1>
-<p>Real-time scam token detection</p>
+<div class="header">
+  <h1>🛡️ Arta Blockchain Security</h1>
+  <p>Real-time scam token intelligence</p>
+</div>
+
+<div class="container">
 
 <h2>🚨 Live Scam Tokens</h2>
 <div id="data">Loading...</div>
+
+<h2>📊 System Status</h2>
+<p class="status">🟢 Monitoring Active</p>
+<p class="status">🟢 Database Online</p>
+<p class="badge">⚠️ Threats Detected</p>
+
+</div>
 
 <script>
 fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
@@ -20,10 +68,11 @@ fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/
   let html = "";
   data.forEach(t => {
     html += `
-      <div style="margin:10px;padding:10px;border:1px solid #333">
+      <div class="card">
         <b>${t.name}</b> (${t.symbol})<br>
         Type: ${t.type}<br>
-        Network: Solana
+        Network: Solana<br>
+        Status: ⚠️ Active Threat
       </div>
     `;
   });
