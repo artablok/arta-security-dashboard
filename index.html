@@ -44,11 +44,6 @@
       font-weight:bold;
     }
 
-    .risk-medium {
-      color:#ffaa00;
-      font-weight:bold;
-    }
-
     .risk-low {
       color:#00ff99;
       font-weight:bold;
@@ -65,6 +60,10 @@
     #stats {
       margin-bottom:20px;
       font-weight:bold;
+    }
+
+    .new {
+      border:1px solid #ff4d4d;
     }
   </style>
 </head>
@@ -84,6 +83,9 @@
 
 <p id="stats"></p>
 
+<h3>🆕 New Threats (Last 24h)</h3>
+<div id="new-threats">Loading...</div>
+
 <div id="data">Loading...</div>
 
 <h2>📊 System Status</h2>
@@ -98,50 +100,61 @@ let allData = [];
 
 function render() {
   let html = "";
+  let newHtml = "";
   let searchValue = document.getElementById("search").value.toLowerCase();
 
   let total = 0;
   let highRisk = 0;
+
+  let today = new Date().toISOString().split("T")[0];
 
   allData.forEach(network => {
     network.scam_tokens.forEach(t => {
 
       total++;
 
+      let isNew = t.first_detected === today;
+
+      let risk = "LOW";
+      let riskClass = "risk-low";
+
+      if (t.type === "Dust Attack" || t.type === "Impersonation") {
+        risk = "HIGH";
+        riskClass = "risk-high";
+        highRisk++;
+      }
+
+      // 🔍 поиск
       if (
         !t.name.toLowerCase().includes(searchValue) &&
         !t.symbol.toLowerCase().includes(searchValue)
       ) return;
 
-      let risk = "LOW";
-      let riskClass = "risk-low";
-
-      if (t.type === "Dust Attack") {
-        risk = "HIGH";
-        riskClass = "risk-high";
-        highRisk++;
-      }
-
-      if (t.type === "Impersonation") {
-        risk = "HIGH";
-        riskClass = "risk-high";
-        highRisk++;
-      }
-
-      html += `
-        <div class="card">
+      let card = `
+        <div class="card ${isNew ? 'new' : ''}">
           <b>${t.name}</b> (${t.symbol})<br>
           Type: ${t.type}<br>
           Address: ${t.address}<br>
           Network: ${network.network}<br>
           Status: ⚠️ ${t.status}<br>
           Risk Level: <span class="${riskClass}">${risk}</span>
+          ${isNew ? "<br>🆕 NEW THREAT" : ""}
         </div>
       `;
+
+      html += card;
+
+      if (isNew) {
+        newHtml += card;
+      }
+
     });
   });
 
   document.getElementById("data").innerHTML = html;
+
+  document.getElementById("new-threats").innerHTML =
+    newHtml || "No new threats today";
 
   document.getElementById("stats").innerHTML = `
     Total threats: ${total} | High risk: ${highRisk}
