@@ -72,6 +72,12 @@
       margin-bottom:10px;
       border-radius:10px;
       background:#1a1f2e;
+      animation: fadeIn 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -109,6 +115,7 @@
 <script>
 let allData = [];
 
+// ===== RENDER TOKENS =====
 function render() {
   let html = "";
   let newHtml = "";
@@ -154,10 +161,7 @@ function render() {
 
       html += card;
 
-      if (isNew) {
-        newHtml += card;
-      }
-
+      if (isNew) newHtml += card;
     });
   });
 
@@ -166,32 +170,59 @@ function render() {
   document.getElementById("stats").innerHTML = `Total threats: ${total} | High risk: ${highRisk}`;
 }
 
-// 🔥 ALERTS
-fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/alerts/alerts.json")
-  .then(res => res.json())
-  .then(alerts => {
-    let html = "";
+// ===== ALERTS LOAD =====
+function loadAlerts() {
+  fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/alerts/alerts.json")
+    .then(res => res.json())
+    .then(alerts => {
+      let html = "";
 
-    alerts.forEach(a => {
-      html += `
-        <div class="alert">
-          <b>${a.title}</b><br>
-          ${a.description}<br>
-          Risk: ${a.risk_level}
-        </div>
+      alerts.forEach(a => {
+        html += `
+          <div class="alert">
+            <b>${a.title}</b><br>
+            ${a.description}<br>
+            Risk: ${a.risk_level}
+          </div>
+        `;
+      });
+
+      document.getElementById("alerts").innerHTML = html;
+    });
+}
+
+// ===== LIVE EFFECT =====
+setInterval(() => {
+  fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/alerts/alerts.json")
+    .then(res => res.json())
+    .then(alerts => {
+
+      let latest = alerts[alerts.length - 1];
+
+      let div = document.createElement("div");
+      div.className = "alert";
+
+      div.innerHTML = `
+        🚨 <b>${latest.title}</b><br>
+        ${latest.description}<br>
+        Risk: ${latest.risk_level}
       `;
+
+      document.getElementById("alerts").prepend(div);
     });
 
-    document.getElementById("alerts").innerHTML = html;
-  });
+}, 15000);
 
-// 🔥 DATA
+// ===== DATA =====
 fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
 .then(res => res.json())
 .then(data => {
   allData = data;
   render();
 });
+
+// INIT
+loadAlerts();
 
 document.getElementById("search").addEventListener("input", render);
 </script>
