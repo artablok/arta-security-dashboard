@@ -65,6 +65,14 @@
     .new {
       border:1px solid #ff4d4d;
     }
+
+    .alert {
+      border:1px solid red;
+      padding:10px;
+      margin-bottom:10px;
+      border-radius:10px;
+      background:#1a1f2e;
+    }
   </style>
 </head>
 
@@ -76,6 +84,9 @@
 </div>
 
 <div class="container">
+
+<h2>🚨 Security Alerts</h2>
+<div id="alerts">Loading alerts...</div>
 
 <h2>🚨 Live Scam Tokens</h2>
 
@@ -124,7 +135,6 @@ function render() {
         highRisk++;
       }
 
-      // 🔍 поиск
       if (
         !t.name.toLowerCase().includes(searchValue) &&
         !t.symbol.toLowerCase().includes(searchValue)
@@ -152,15 +162,30 @@ function render() {
   });
 
   document.getElementById("data").innerHTML = html;
-
-  document.getElementById("new-threats").innerHTML =
-    newHtml || "No new threats today";
-
-  document.getElementById("stats").innerHTML = `
-    Total threats: ${total} | High risk: ${highRisk}
-  `;
+  document.getElementById("new-threats").innerHTML = newHtml || "No new threats today";
+  document.getElementById("stats").innerHTML = `Total threats: ${total} | High risk: ${highRisk}`;
 }
 
+// 🔥 ALERTS
+fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/alerts/alerts.json")
+  .then(res => res.json())
+  .then(alerts => {
+    let html = "";
+
+    alerts.forEach(a => {
+      html += `
+        <div class="alert">
+          <b>${a.title}</b><br>
+          ${a.description}<br>
+          Risk: ${a.risk_level}
+        </div>
+      `;
+    });
+
+    document.getElementById("alerts").innerHTML = html;
+  });
+
+// 🔥 DATA
 fetch("https://raw.githubusercontent.com/artablok/crypto-security-research/main/database/solana.json")
 .then(res => res.json())
 .then(data => {
